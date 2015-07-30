@@ -158,9 +158,9 @@ typedef void (^SRWebSocketStartBlock)(id response, NSError *error);
     if (self.startBlock) {
         self.startBlock(nil,error);
         self.startBlock = nil;
-    } else {
-        [[_connectionInfo connection] didReceiveError:error];
-        
+    } else if (!self.startedAbort) {
+//        [[_connectionInfo connection] didReceiveError:error];
+        SRLogServerSentEvents("reconnect from errors: %@", error);
         if ([SRConnection ensureReconnecting:[_connectionInfo connection]]) {
             [self performConnect:nil reconnecting:YES];
         }
